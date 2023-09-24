@@ -12,7 +12,7 @@ using (PubContext context = new PubContext())
 //AddAuthor();
 //GetAuthors();
 
-AddAuthorWithBook();
+//AddAuthorWithBook();
 GetAuthorsWithBooks();
 
 
