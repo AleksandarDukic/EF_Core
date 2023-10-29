@@ -3,74 +3,39 @@ using Microsoft.EntityFrameworkCore;
 using PublisherData;
 using PublisherDomain;
 
-using (PubContext context = new PubContext())
+PubContext _context = new PubContext();
+//InserNewAuthorWithNewBook();
+//AddNewBookToExistingAuthorInMemory();
+deleteAuthor();
+void InserNewAuthorWithNewBook()
 {
-    context.Database.EnsureCreated();
+    var author = new Author { FirstName = "Lynda", LastName = "Rutledhe" };
+    author.Books.Add(new Book
+    {
+        Title = "West With Giraffes",
+        PublishDate = new DateTime(2021, 2, 1)
+    });
+
+    _context.Authors.Add(author);
+    _context.SaveChanges();
 }
 
-//GetAuthors();
-//AddAuthor();
-//GetAuthors();
-
-//AddAuthorWithBook();
-GetAuthorsWithBooks();
-
-
-
-void AddAuthor()
+void AddNewBookToExistingAuthorInMemory()
 {
-    var author = new Author()
+    var author = _context.Authors.FirstOrDefault(a => a.LastName == "Rutledhe");
+    if (author != null)
     {
-        FirstName = "Josie",
-        LastName = "Newf"
-    };
-    using var context = new PubContext();
-    context.Authors.Add(author);
-    context.SaveChanges();
-}
-void GetAuthors()
-{
-    using var context = new PubContext();
-    var authors = context.Authors.ToList();
-    foreach (var author in authors)
-    {
-        Console.WriteLine(author.FirstName + " " + author.LastName);
+        author.Books.Add(
+            new Book { Title = "Wool", PublishDate = new DateTime(2012, 1, 1) }
+            );
     }
+    _context.SaveChanges();
+
 }
 
-void AddAuthorWithBook()
+void deleteAuthor()
 {
-    var author = new Author() { FirstName = "Julie", LastName = "Lerman" };
-    author.Books.Add(
-        new Book
-        {
-            Title = "Programming Entity Framework",
-            PublishDate = new DateTime(2009, 1, 1).ToUniversalTime(),
-        }
-    );
-    author.Books.Add(
-        new Book
-        {
-            Title = "Programming Entity Framework 2nd Ed",
-            PublishDate = new DateTime(2010, 8, 1).ToUniversalTime(),
-        }
-    ); ;
-    using var context = new PubContext();
-    context.Authors.Add(author);
-    context.SaveChanges();
-}
-
-void GetAuthorsWithBooks()
-{
-    using var context = new PubContext();
-    var authrs = context.Authors.Include(a => a.Books).ToList();
-    foreach(var author in authrs)
-    {
-        Console.WriteLine(author.FirstName + " " + author.LastName);
-        foreach (var book in author.Books)
-        {
-            Console.WriteLine("*" + book.Title);
-        }
-    }
-
+    var author = _context.Authors.FirstOrDefault(a => a.LastName == "Rutledhe");
+    _context.Authors.Remove(author);
+    _context.SaveChanges();
 }
